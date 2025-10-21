@@ -1,17 +1,84 @@
 import React from "react";
 
+
+// === Global link style (gold + subtle hover) ===
+const linkStyle =
+  "text-[#b38b1d] font-medium hover:underline hover:decoration-[#b38b1d]/70 transition";
+
+
 // ==== Profile ====
 const PROFILE = {
   name: "Naïl B. Khelifa",
   shortName: "Naïl Khelifa",
   tagline:
-    "Trinity College, University of Cambridge · G-Research Scholar · Probabilistic Machine Learning",
+    "Trinity College, University of Cambridge · Department of Engineering · Probabilistic Machine Learning",
   scholar: "https://scholar.google.com/citations?user=vOo9y_cAAAAJ&hl=fr",
   github: "https://github.com/NailKhelifa",
   linkedin: "https://www.linkedin.com/in/nailkhelifa",
   photo: "/portrait.jpg",
-  intro: `Hi, I’m Naïl — a first-year PhD student at the Department of Engineering, University of Cambridge. I am fortunate to be supervised by Prof. Ramji Venkataramanan (Probabilistic Systems, Information and Inference Group) and advised by Prof. Rich Turner (Machine Learning Group). My research focuses on the theoretical foundations of diffusion models, seeking to understand their collapse phenomena, and more broadly on the study of probability flows — encompassing diffusion processes, flow-based generative models, and optimal transport. I am recipient of the G-Research Trinity College PhD Scholarship.`,
+  intro: `
+<p>
+Hi, I’m Naïl — a first-year PhD student at the Department of Engineering, University of Cambridge. 
+I am fortunate to be supervised by <em>Prof. Ramji Venkataramanan</em> (Probabilistic Systems, Information and Inference Group) and advised by 
+<em>Prof. Rich Turner</em> (Machine Learning Group).
+</p>
+
+<p>
+My research focuses on the theoretical foundations of diffusion models, seeking to understand their collapse phenomena, 
+and more broadly on the study of <em>probability flows</em> — encompassing diffusion processes, flow-based generative models, and optimal transport.
+</p>
+
+<p>
+I am the recipient of the <em>G-Research Trinity College PhD Scholarship</em>.  
+Beyond my core research, I maintain a broad interest in:
+</p>
+
+<ul>
+  <li>Optimal transport and flow matching</li>
+  <li>Stochastic differential equations and diffusion processes</li>
+  <li>Bridging generative modeling and theoretical machine learning</li>
+</ul>
+`,
 };
+
+const INTRO_PARAS = [
+  <>
+    Hi, I’m Naïl — a first-year PhD student at the Department of Engineering,
+    University of Cambridge. I am fortunate to be supervised by
+    <a href="https://rv285.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Ramji Venkataramanan</a> (Probabilistic Systems, Information and
+    Inference Group) and advised by <a href="https://rich-turner-group.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Rich Turner</a> (Machine Learning Group).
+  </>,
+  <>
+    I am grateful to be the recipient of the <strong>G-Research Trinity College PhD Scholarship</strong>.
+  </>,
+  <>
+    <em>Research.</em> My research focuses on the theoretical foundations of diffusion models,
+    seeking to understand their collapse phenomena, and more broadly on the study
+    of <strong>probability flows</strong> — encompassing diffusion processes,
+    flow-based generative models, and optimal transport.
+  </>,
+  <>
+    <em>Past Life.</em> Before coming to Cambridge, I followed a rather unconventional path. After studying <strong>applied mathematics, literature, 
+      and geopolitics</strong> during my preparatory classes at <em>Lycée Henri IV</em>, I entered a dual degree between <strong>HEC Paris</strong>, 
+      a business school, and <strong>ENSAE Paris</strong>, an engineering school specializing in statistics. Over time, I found myself increasingly 
+      drawn to the mathematical and statistical aspects of my studies. This curiosity led me first to pursue a <strong>Master’s degree in Mathematics 
+      at Sorbonne Université</strong>, and later a <strong>research-oriented dual degree</strong> between <strong>École Normale Supérieure Paris-Saclay 
+      (MSc Mathématiques, Vision, Apprentissage)</strong> and ENSAE’s Data Science, Statistics and Learning specialization track. 
+      Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
+      (Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), 
+      and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background:
+
+  </>,
+];
+
+const INTRO_BULLETS = [
+  "2025-    : PhD Student, Department of Engineering, University of Cambridge",
+  "2024-2025: MSc Mathématiques, Vision, Apprentissage (MVA), ENS Paris Saclay",
+  "2022-2023: Master's in Mathematics, Sorbonne Université",
+  "2021-2025: Dual Degree Between ENSAE Paris and HEC Paris",
+  "2019-2021: Preparatory Classes, Lycée Henri IV"
+];
+
 
 // ==== Papers ====
 const PAPERS = [
@@ -117,13 +184,31 @@ export default function AcademicSite() {
           {PROFILE.tagline}
         </p>
 
-        {/* === Introduction Paragraph === */}
-        <p
-          className="mt-6 text-[15px] md:text-base text-gray-700 leading-relaxed max-w-2xl mx-auto"
+       
+        {/* === Introduction (justified, multi-paragraph + bullets) === */}
+        <div
+          className="mt-8 text-[15px] md:text-base text-gray-700 leading-relaxed text-justify max-w-2xl mx-auto"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
-          {PROFILE.intro}
-        </p>
+          {INTRO_PARAS.map((para, i) => (
+            <p key={i} className="mb-4">{para}</p>
+          ))}
+
+          <ul className="list-disc ml-6 space-y-1 text-left">
+            {INTRO_BULLETS.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+          
+
+          <p className="text-left text-gray-700 mt-4" style={{ textAlign: "justify" }}>
+            <span className="italic text-[#b38b1d]">Contact:</span> nbk24(at)cam.ac.uk
+          </p>
+
+        </div>
+
+
+
 
         {/* === Links === */}
         <div className="mt-8 flex justify-center gap-4">
