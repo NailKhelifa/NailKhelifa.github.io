@@ -43,8 +43,7 @@ Beyond my core research, I maintain a broad interest in:
 
 const INTRO_PARAS = [
   <>
-    Hi, I’m Naïl — a first-year PhD student at the Department of Engineering,
-    University of Cambridge. I am fortunate to be supervised by
+    Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong>. I am fortunate to be supervised by
     <a href="https://rv285.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Ramji Venkataramanan</a> (Probabilistic Systems, Information and
     Inference Group) and advised by <a href="https://rich-turner-group.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Rich Turner</a> (Machine Learning Group).
   </>,
@@ -52,20 +51,18 @@ const INTRO_PARAS = [
     I am grateful to be the recipient of the <strong>G-Research Trinity College PhD Scholarship</strong>.
   </>,
   <>
-    <em>Research.</em> My research focuses on the theoretical foundations of diffusion models,
-    seeking to understand their collapse phenomena, and more broadly on the study
-    of <strong>probability flows</strong> — encompassing diffusion processes,
-    flow-based generative models, and optimal transport.
+    <em>Research.</em> My research focuses on the theoretical foundations of diffusion models, seeking to understand their collapse phenomena, and more broadly on the study
+    of <strong>probability flows</strong> — encompassing diffusion processes, flow-based generative models, and optimal transport.
   </>,
   <>
-    <em>Past Life.</em> Before coming to Cambridge, I followed a rather unconventional path. After studying <strong>applied mathematics, literature, 
-      and geopolitics</strong> during my preparatory classes at <em>Lycée Henri IV</em>, I entered a dual degree between <strong>HEC Paris</strong>, 
+    <em>Past Life.</em> Before coming to Cambridge, I followed a rather unconventional path. After studying applied mathematics, literature, 
+      and geopolitics during my preparatory classes at <strong>Lycée Henri IV</strong>, I entered a dual degree between <strong>HEC Paris</strong>, 
       a business school, and <strong>ENSAE Paris</strong>, an engineering school specializing in statistics. Over time, I found myself increasingly 
-      drawn to the mathematical and statistical aspects of my studies. This curiosity led me first to pursue a <strong>Master’s degree in Mathematics 
-      at Sorbonne Université</strong>, and later a <strong>research-oriented dual degree</strong> between <strong>École Normale Supérieure Paris-Saclay 
+      drawn to the mathematical and statistical aspects of my studies. This curiosity led me first to pursue a Master’s degree in Mathematics 
+      at <strong>Sorbonne Université</strong>, and later a research-oriented dual degree between <strong>École Normale Supérieure Paris-Saclay 
       (MSc Mathématiques, Vision, Apprentissage)</strong> and ENSAE’s Data Science, Statistics and Learning specialization track. 
       Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
-      (Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), 
+      (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), 
       and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background:
 
   </>,
