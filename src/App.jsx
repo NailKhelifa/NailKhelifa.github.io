@@ -55,6 +55,9 @@ const INTRO_PARAS = [
     of <strong>probability flows</strong> — encompassing diffusion processes, flow-based generative models, and optimal transport.
   </>,
   <>
+    <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7). 
+  </>,
+  <>
     <em>Past Life.</em> Before coming to Cambridge, I followed a rather unconventional path. After studying applied mathematics, literature, 
       and geopolitics during my preparatory classes at <strong>Lycée Henri IV</strong>, I entered a dual degree between <strong>HEC Paris</strong>, 
       a business school, and <strong>ENSAE Paris</strong>, an engineering school specializing in statistics. Over time, I found myself increasingly 
