@@ -58,15 +58,13 @@ const INTRO_PARAS = [
     <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7). 
   </>,
   <>
-    <em>Past Life.</em> Before coming to Cambridge, I followed a rather unconventional path. After studying applied mathematics, literature, 
-      and geopolitics during my preparatory classes at <strong>Lycée Henri IV</strong>, I entered a dual degree between <strong>HEC Paris</strong>, 
-      a business school, and <strong>ENSAE Paris</strong>, an engineering school specializing in statistics. Over time, I found myself increasingly 
-      drawn to the mathematical and statistical aspects of my studies. This curiosity led me first to pursue a Master’s degree in Mathematics 
-      at <strong>Sorbonne Université</strong>, and later a research-oriented dual degree between <strong>École Normale Supérieure Paris-Saclay 
-      (MSc Mathématiques, Vision, Apprentissage)</strong> and ENSAE’s Data Science, Statistics and Learning specialization track. 
-      Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
-      (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), <a href="https://perso.telecom-paristech.fr/fdalche/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Florence d'Alché-Buc</a> (LTCI, Télécom Paris)
-      and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background:
+    <em>Past Life.</em> Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory class system at Lycée Henri IV, 
+    before entering a dual degree program between HEC Paris and ENSAE Paris. Over time, my interests shifted increasingly toward the mathematical and statistical foundations 
+    of the subjects I was studying. This led me to pursue a Master’s degree in Mathematics at Sorbonne Université, followed by a research-oriented dual degree between École Normale 
+    Supérieure Paris-Saclay (MSc Mathématiques, Vision, Apprentissage) and ENSAE’s specialization in Data Science, Statistics, and Learning.
+    Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
+    (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), <a href="https://perso.telecom-paristech.fr/fdalche/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Florence d'Alché-Buc</a> (LTCI, Télécom Paris)
+    and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background:
 
   </>,
 ];
