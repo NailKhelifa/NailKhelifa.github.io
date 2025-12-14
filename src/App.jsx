@@ -43,9 +43,9 @@ Beyond my core research, I maintain a broad interest in:
 
 const INTRO_PARAS = [
   <>
-    Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong>. I am fortunate to be supervised by
+    Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong>. I am fortunate to be co-supervised by
     <a href="https://rv285.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Ramji Venkataramanan</a> (Probabilistic Systems, Information and
-    Inference Group) and advised by <a href="https://rich-turner-group.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Rich Turner</a> (Machine Learning Group).
+    Inference Group) and <a href="https://rich-turner-group.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Rich Turner</a> (Machine Learning Group).
   </>,
   <>
     I am grateful to be the recipient of the <strong>G-Research Trinity College PhD Scholarship</strong>.
