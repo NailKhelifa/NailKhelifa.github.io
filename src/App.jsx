@@ -55,7 +55,7 @@ const INTRO_PARAS = [
     of <strong>probability flows</strong> — encompassing diffusion processes, flow-based generative models, and optimal transport.
   </>,
   <>
-    <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7). 
+    <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7) and Inference (3F8). 
   </>,
   <>
     <em>Past Life.</em> Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory class system at Lycée Henri IV, 
@@ -80,6 +80,13 @@ const INTRO_BULLETS = [
 
 // ==== Papers ====
 const PAPERS = [
+  {
+    id: "khelifa2026modelcollapse",
+    title: "Error Propagation and Model Collapse in Diffusion Models: A Theoretical Study",
+    authors: "Naïl Khelifa, Richard E. Turner, Ramji Venkataramanan",
+    venue: "Arxiv Preprint, 2026",
+    link: "https://arxiv.org/abs/2602.16601",
+  },
   {
     id: "khelifa2025tweedie",
     title: "Enhanced Denoising and Convergent Regularisation Using Tweedie Scaling",
