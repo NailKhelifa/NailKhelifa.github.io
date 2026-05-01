@@ -55,12 +55,11 @@ const INTRO_PARAS = [
     of <strong>probability flows</strong> — encompassing diffusion processes, flow-based generative models, and optimal transport.
   </>,
   <>
-    <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7) and Inference (3F8). 
+    <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7) and <em>Inference</em> (3F8). At a Master's level, I co-supervise a thesis in the <em>MPhil in Machine Learning and Machine Intelligence </em> (MLMI) at Cambridge, on "Learning Heavy-Tailed Distributions with Diffusion Models".
   </>,
   <>
     <em>Past Life.</em> Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory class system at Lycée Henri IV, 
-    before entering a dual degree program between HEC Paris and ENSAE Paris. Over time, my interests shifted increasingly toward the mathematical and statistical foundations 
-    of the subjects I was studying. This led me to pursue a Master’s degree in Mathematics at Sorbonne Université, followed by a research-oriented dual degree between École Normale 
+    before entering a dual degree program between HEC Paris and ENSAE Paris. Increasingly interested in the mathematical and statistical foundations of the subjects I was studying, I pursued a Master’s degree in Mathematics at Sorbonne Université, followed by a dual degree between École Normale
     Supérieure Paris-Saclay (MSc Mathématiques, Vision, Apprentissage) and ENSAE’s specialization in Data Science, Statistics, and Learning.
     Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
     (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), <a href="https://perso.telecom-paristech.fr/fdalche/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Florence d'Alché-Buc</a> (LTCI, Télécom Paris)
@@ -84,7 +83,7 @@ const PAPERS = [
     id: "khelifa2026modelcollapse",
     title: "Error Propagation and Model Collapse in Diffusion Models: A Theoretical Study",
     authors: "Naïl Khelifa, Richard E. Turner, Ramji Venkataramanan",
-    venue: "Arxiv Preprint, 2026",
+    venue: "Forty-Third International Conference on Machine Learning (ICML), 2026",
     link: "https://arxiv.org/abs/2602.16601",
   },
   {
