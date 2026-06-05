@@ -24,26 +24,19 @@ I am fortunate to be supervised by <em>Prof. Ramji Venkataramanan</em> (Probabil
 </p>
 
 <p>
-My research focuses on the theoretical foundations of diffusion models, seeking to understand their collapse phenomena, 
-and more broadly on the study of <em>probability flows</em> — encompassing diffusion processes, flow-based generative models, and optimal transport.
+Broadly speaking, my research focuses on the theoretical foundations (geometry, structure of errors, sampling) of <em>flow/diffusion-based models<em>. I am also interested
+in understanding how to train generative models on synthetic data.
 </p>
 
 <p>
-I am the recipient of the <em>G-Research Trinity College PhD Scholarship</em>.  
-Beyond my core research, I maintain a broad interest in:
+I am grateful to be recipient of the <em>G-Research Trinity College PhD Scholarship</em>.  
 </p>
-
-<ul>
-  <li>Optimal transport and flow matching</li>
-  <li>Stochastic differential equations and diffusion processes</li>
-  <li>Bridging generative modeling and theoretical machine learning</li>
-</ul>
 `,
 };
 
 const INTRO_PARAS = [
   <>
-    Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong>. I am fortunate to be co-supervised by
+    Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong> supervised by
     <a href="https://rv285.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Ramji Venkataramanan</a> (Probabilistic Systems, Information and
     Inference Group) and <a href="https://rich-turner-group.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Rich Turner</a> (Machine Learning Group).
   </>,
@@ -51,15 +44,15 @@ const INTRO_PARAS = [
     I am grateful to be the recipient of the <strong>G-Research Trinity College PhD Scholarship</strong>.
   </>,
   <>
-    <em>Research.</em> My research focuses on the theoretical foundations of diffusion models, seeking to understand their collapse phenomena, and more broadly on the study
-    of <strong>probability flows</strong> — encompassing diffusion processes, flow-based generative models, and optimal transport.
+    <em>Research.</em> My research focuses on the theoretical foundations (geometry, structure of errors, sampling) of <em>flow/diffusion-based models</em>. I am also interested
+  in understanding how to train generative models on synthetic data.
   </>,
   <>
     <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7) and <em>Inference</em> (3F8). At a Master's level, I co-supervise a thesis in the <em>MPhil in Machine Learning and Machine Intelligence </em> (MLMI) at Cambridge, on "Learning Heavy-Tailed Distributions with Diffusion Models".
   </>,
   <>
-    <em>Past Life.</em> Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory class system at Lycée Henri IV, 
-    before entering a dual degree program between HEC Paris and ENSAE Paris. Increasingly interested in the mathematical and statistical foundations of the subjects I was studying, I pursued a Master’s degree in Mathematics at Sorbonne Université, followed by a dual degree between École Normale
+    <em>Previous Studies.</em> Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory class system at Lycée Henri IV, 
+    before entering a dual degree program between HEC Paris and ENSAE Paris. I also pursued a Master’s degree in Mathematics at Sorbonne Université, followed by a dual degree between École Normale
     Supérieure Paris-Saclay (MSc Mathématiques, Vision, Apprentissage) and ENSAE’s specialization in Data Science, Statistics, and Learning.
     Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
     (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), <a href="https://perso.telecom-paristech.fr/fdalche/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Florence d'Alché-Buc</a> (LTCI, Télécom Paris)
@@ -80,16 +73,23 @@ const INTRO_BULLETS = [
 // ==== Papers ====
 const PAPERS = [
   {
+    id: "khelifa2026div_free",
+    title: "Diffusion Models Observe Only Gradients: A Geometric Perspective on Score Matching Errors",
+    authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
+    venue: "Preprint, 2026",
+    link: "https://arxiv.org/abs/2606.06179",
+  },
+  {
     id: "khelifa2026modelcollapse",
-    title: "Error Propagation and Model Collapse in Diffusion Models: A Theoretical Study",
-    authors: "Naïl Khelifa, Richard E. Turner, Ramji Venkataramanan",
+    title: "Quantifying Error Propagation and Model Collapse in Diffusion Models",
+    authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
     venue: "Forty-Third International Conference on Machine Learning (ICML), 2026",
     link: "https://arxiv.org/abs/2602.16601",
   },
   {
     id: "khelifa2025tweedie",
     title: "Enhanced Denoising and Convergent Regularisation Using Tweedie Scaling",
-    authors: "Naïl Khelifa, Carola-Bibiane Schönlieb, Ferdia Sherry",
+    authors: "Naïl B. Khelifa, Carola-Bibiane Schönlieb, Ferdia Sherry",
     venue: "Scale Space and Variational Methods in Computer Vision (SSVM), 2025",
     link: "https://link.springer.com/chapter/10.1007/978-3-031-92366-1_15",
   },
@@ -97,7 +97,7 @@ const PAPERS = [
     id: "khelifa2024portfolio",
     title:
       "Cluster-driven Hierarchical Representation of Large Asset Universes for Optimal Portfolio Construction",
-    authors: "Naïl Khelifa, Jérôme Allier, Mihai Cucuringu",
+    authors: "Naïl B. Khelifa, Jérôme Allier, Mihai Cucuringu",
     venue: "ACM International Conference on AI in Finance (ICAIF ’24), 2024",
     award: "🏅 Best Paper Award — Runner-up",
     link: "https://dl.acm.org/doi/10.1145/3677052.3698676",
@@ -119,7 +119,7 @@ const LinkButton = ({ href, children }) => (
 // === Highlight your name dynamically ===
 const highlightName = (authors) => {
   const nameRegex = new RegExp(PROFILE.shortName, "gi");
-  return authors.replace(nameRegex, `<strong>${PROFILE.shortName}*</strong>`);
+  return authors.replace(nameRegex, `<strong>${PROFILE.shortName}</strong>`);
 };
 
 const PaperCard = ({ paper }) => (
