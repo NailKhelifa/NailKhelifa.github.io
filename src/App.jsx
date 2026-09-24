@@ -73,10 +73,18 @@ const INTRO_BULLETS = [
 // ==== Papers ====
 const PAPERS = [
   {
+    id: "khelifa2026lim_recursively_trained",
+    title: "Recursively Trained Diffusion Models: Limiting Collapse Distribution and Spectral Characterization",
+    authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
+    venue: "The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS), 2026",
+    award: "🏅 Spotlight",
+    link: "https://arxiv.org/abs/2606.13796",
+  },
+  {
     id: "khelifa2026div_free",
     title: "Diffusion Models Observe Only Gradients: A Geometric Perspective on Score Matching Errors",
     authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
-    venue: "Preprint, 2026",
+    venue: "The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS), 2026",
     link: "https://arxiv.org/abs/2606.06179",
   },
   {
