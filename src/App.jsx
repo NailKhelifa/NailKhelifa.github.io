@@ -16,6 +16,7 @@ const PROFILE = {
   github: "https://github.com/NailKhelifa",
   linkedin: "https://www.linkedin.com/in/nailkhelifa",
   photo: "/portrait.jpg",
+  cv: "/Khelifa_CV.pdf",
   intro: `
 <p>
 Hi, I’m Naïl — a first-year PhD student at the Department of Engineering, University of Cambridge. 
@@ -56,7 +57,8 @@ const INTRO_PARAS = [
     Supérieure Paris-Saclay (MSc Mathématiques, Vision, Apprentissage) and ENSAE’s specialization in Data Science, Statistics, and Learning.
     Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
     (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), <a href="https://perso.telecom-paristech.fr/fdalche/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Florence d'Alché-Buc</a> (LTCI, Télécom Paris)
-    and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background:
+    and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background (full{" "}
+    <a href={PROFILE.cv} target="_blank" rel="noopener noreferrer" className={linkStyle}>CV here</a>):
 
   </>,
 ];
@@ -224,6 +226,7 @@ export default function AcademicSite() {
 
         {/* === Links === */}
         <div className="mt-8 flex justify-center gap-4">
+          <LinkButton href={PROFILE.cv}>CV</LinkButton>
           <LinkButton href={PROFILE.scholar}>Google Scholar</LinkButton>
           <LinkButton href={PROFILE.linkedin}>LinkedIn</LinkButton>
           <LinkButton href={PROFILE.github}>GitHub</LinkButton>
