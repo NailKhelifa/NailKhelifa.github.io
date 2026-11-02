@@ -1,37 +1,17 @@
 /* ==== Tokens ==== */
 :root {
-  --bg: #efe9dc;
-  --bg-2: #e6dfcd;
+  --bg: #ffffff;
+  --bg-2: #f4f3f0;
   --ink: #1c1a16;
   --ink-2: #45403a;
-  --ink-3: #857d6d;
-  --rule: #cbc1ab;
+  --ink-3: #7d776b;
+  --rule: #dcd8cf;
   --accent: #b02a1a;
-  --accent-soft: rgba(176, 42, 26, 0.09);
-  --grid: rgba(28, 26, 22, 0.05);
-  --grain-opacity: 0.35;
-  --grain-blend: multiply;
+  --accent-soft: rgba(176, 42, 26, 0.07);
 
   --serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f0f0d;
-    --bg-2: #181814;
-    --ink: #ebe5d4;
-    --ink-2: #bcb4a1;
-    --ink-3: #7d7666;
-    --rule: #2f2d27;
-    --accent: #ff6b45;
-    --accent-soft: rgba(255, 107, 69, 0.1);
-    --grid: rgba(235, 229, 212, 0.035);
-    --grain-opacity: 0.18;
-    --grain-blend: screen;
-    color-scheme: dark;
-  }
 }
 
 :root[data-theme="dark"] {
@@ -43,9 +23,6 @@
   --rule: #2f2d27;
   --accent: #ff6b45;
   --accent-soft: rgba(255, 107, 69, 0.1);
-  --grid: rgba(235, 229, 212, 0.035);
-  --grain-opacity: 0.18;
-  --grain-blend: screen;
   color-scheme: dark;
 }
 
@@ -65,10 +42,6 @@ body {
   margin: 0;
   min-height: 100vh;
   background-color: var(--bg);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 28px 28px;
   color: var(--ink);
   font-family: var(--serif);
   font-size: 19px;
@@ -76,18 +49,6 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-/* paper grain */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  opacity: var(--grain-opacity);
-  mix-blend-mode: var(--grain-blend);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .38 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
@@ -127,15 +88,6 @@ p {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
-}
-
-.flow {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
 }
 
 /* ==== Shared bits ==== */
@@ -195,15 +147,6 @@ a.ink:hover {
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.tb-right {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-.tb-clock {
-  font-variant-numeric: tabular-nums;
-}
-
 .layout {
   display: grid;
   grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
@@ -225,19 +168,6 @@ a.ink:hover {
   border: 1px solid var(--rule);
   background: color-mix(in srgb, var(--bg) 82%, transparent);
 }
-.crop {
-  position: absolute;
-  width: 11px;
-  height: 11px;
-  border-color: var(--ink);
-  border-style: solid;
-  border-width: 0;
-}
-.crop.tl { top: -6px; left: -6px; border-top-width: 1px; border-left-width: 1px; }
-.crop.tr { top: -6px; right: -6px; border-top-width: 1px; border-right-width: 1px; }
-.crop.bl { bottom: -6px; left: -6px; border-bottom-width: 1px; border-left-width: 1px; }
-.crop.br { bottom: -6px; right: -6px; border-bottom-width: 1px; border-right-width: 1px; }
-
 .plate-canvas canvas {
   display: block;
   width: 100%;
@@ -294,19 +224,13 @@ a.ink:hover {
 }
 .index a {
   display: grid;
-  grid-template-columns: 4.2em 1fr auto;
+  grid-template-columns: 1fr auto;
   align-items: baseline;
   padding: 7px 0;
   border-bottom: 1px solid var(--rule);
   text-decoration: none;
   color: var(--ink-2);
   transition: color 0.2s ease, padding 0.25s ease;
-}
-.ix-num {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  color: var(--ink-3);
 }
 .ix-title {
   font-size: 17px;
@@ -328,9 +252,6 @@ a.ink:hover {
 }
 .index a.on .ix-title {
   font-style: italic;
-}
-.index a.on .ix-num {
-  color: var(--accent);
 }
 .index a.on .ix-mark {
   opacity: 1;
@@ -360,13 +281,6 @@ a.ink:hover {
   align-items: baseline;
   gap: 14px;
   margin-bottom: 26px;
-}
-.sec-num {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-  white-space: nowrap;
 }
 .sec-title {
   font-size: 32px;
@@ -715,9 +629,6 @@ a.ink:hover {
 @media (max-width: 560px) {
   body {
     font-size: 17.5px;
-  }
-  .tb-clock {
-    display: none;
   }
   .name {
     white-space: normal;

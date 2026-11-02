@@ -379,10 +379,6 @@ export default function AsciiPortrait({ src, alt }) {
 
   return (
     <figure className="plate">
-      <span className="crop tl" />
-      <span className="crop tr" />
-      <span className="crop bl" />
-      <span className="crop br" />
       <div ref={wrapRef} className="plate-canvas">
         <canvas
           ref={canvasRef}

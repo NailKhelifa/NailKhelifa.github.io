@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import AsciiPortrait from "./components/AsciiPortrait.jsx";
-import FlowField from "./components/FlowField.jsx";
 import Scramble from "./components/Scramble.jsx";
 import { getTheme, onThemeChange, setTheme } from "./theme.js";
 
@@ -17,12 +16,12 @@ const PROFILE = {
 };
 
 const SECTIONS = [
-  { id: "preamble", num: "I", title: "Preamble" },
-  { id: "research", num: "II", title: "Research" },
-  { id: "publications", num: "III", title: "Publications" },
-  { id: "teaching", num: "IV", title: "Teaching" },
-  { id: "trajectory", num: "V", title: "Trajectory" },
-  { id: "correspondence", num: "VI", title: "Correspondence" },
+  { id: "preamble", title: "Preamble" },
+  { id: "research", title: "Research" },
+  { id: "publications", title: "Publications" },
+  { id: "teaching", title: "Teaching" },
+  { id: "trajectory", title: "Trajectory" },
+  { id: "correspondence", title: "Correspondence" },
 ];
 
 // ==== Papers ====
@@ -96,13 +95,6 @@ const A = ({ href, children }) => (
   </a>
 );
 
-function toRoman(n) {
-  const map = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
-  let out = "";
-  for (const [v, s] of map) while (n >= v) (out += s), (n -= v);
-  return out;
-}
-
 function toBibtex(p) {
   const authors = p.authors
     .split(", ")
@@ -158,15 +150,6 @@ function useActiveSection(ids) {
 }
 
 // ==== Components ====
-function Clock() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  return now.toLocaleTimeString("en-GB", { timeZone: "Europe/London", timeZoneName: "short", hour12: false });
-}
-
 function ThemeToggle() {
   const [theme, set] = useState(getTheme);
   useEffect(() => onThemeChange(() => set(getTheme())), []);
@@ -178,12 +161,11 @@ function ThemeToggle() {
   );
 }
 
-function Section({ id, num, title, meta, children }) {
+function Section({ id, title, meta, children }) {
   const [ref, seen] = useInView();
   return (
     <section id={id} ref={ref} className={`sec reveal${seen ? " in" : ""}`}>
       <header className="sec-head">
-        <span className="sec-num">§ {num}</span>
         <h2 className="sec-title">
           <Scramble text={title} play={seen} duration={700} />
         </h2>
@@ -260,19 +242,12 @@ const SECTION_IDS = SECTIONS.map((s) => s.id);
 
 export default function AcademicSite() {
   const active = useActiveSection(SECTION_IDS);
-  const year = new Date().getFullYear();
 
   return (
     <>
-      <FlowField />
       <div className="shell">
         <header className="topbar">
-          <span className="tb-right">
-            <span className="tb-clock">
-              <Clock />
-            </span>
-            <ThemeToggle />
-          </span>
+          <ThemeToggle />
         </header>
 
         <div className="layout">
@@ -290,7 +265,6 @@ export default function AcademicSite() {
                 {SECTIONS.map((s) => (
                   <li key={s.id}>
                     <a href={`#${s.id}`} className={active === s.id ? "on" : undefined} aria-current={active === s.id ? "location" : undefined}>
-                      <span className="ix-num">§ {s.num}</span>
                       <span className="ix-title">{s.title}</span>
                       <span className="ix-mark">←</span>
                     </a>
@@ -308,7 +282,7 @@ export default function AcademicSite() {
           </aside>
 
           <main className="main">
-            <Section id="preamble" num="I" title="Preamble">
+            <Section id="preamble" title="Preamble">
               <div className="prose">
                 <p className="dropcap">
                   Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong>,
@@ -321,7 +295,7 @@ export default function AcademicSite() {
               </div>
             </Section>
 
-            <Section id="research" num="II" title="Research">
+            <Section id="research" title="Research">
               <div className="prose">
                 <p>
                   My research focuses on the theoretical foundations (geometry, structure of errors, sampling) of{" "}
@@ -337,7 +311,7 @@ export default function AcademicSite() {
               </ul>
             </Section>
 
-            <Section id="publications" num="III" title="Publications">
+            <Section id="publications" title="Publications">
               <ol className="pubs">
                 {PAPERS.map((p, i) => (
                   <Paper key={p.id} paper={p} index={i} />
@@ -345,7 +319,7 @@ export default function AcademicSite() {
               </ol>
             </Section>
 
-            <Section id="teaching" num="IV" title="Teaching">
+            <Section id="teaching" title="Teaching">
               <ul className="chev">
                 <li>
                   <span className="chev-head">Supervisor, Trinity College</span>
@@ -363,7 +337,7 @@ export default function AcademicSite() {
               </ul>
             </Section>
 
-            <Section id="trajectory" num="V" title="Trajectory">
+            <Section id="trajectory" title="Trajectory">
               <div className="prose">
                 <p>
                   Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory
@@ -400,7 +374,7 @@ export default function AcademicSite() {
               </p>
             </Section>
 
-            <Section id="correspondence" num="VI" title="Correspondence">
+            <Section id="correspondence" title="Correspondence">
               <div className="contact">
                 <span className="contact-addr">
                   {PROFILE.email[0]} <span className="at">(at)</span> {PROFILE.email[1]}
@@ -412,7 +386,7 @@ export default function AcademicSite() {
 
         <footer className="colophon">
           <p className="col-sign">
-            © {toRoman(year)} · {PROFILE.name}
+            © {PROFILE.name}
           </p>
         </footer>
       </div>

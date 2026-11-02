@@ -1,11 +1,8 @@
 // Theme helpers shared by the React tree and the canvas renderers.
 
-const DARK_QUERY = "(prefers-color-scheme: dark)";
-
 export function getTheme() {
   const attr = document.documentElement.dataset.theme;
-  if (attr === "light" || attr === "dark") return attr;
-  return window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
+  return attr === "dark" ? "dark" : "light";
 }
 
 export function setTheme(theme) {
@@ -20,12 +17,7 @@ export function setTheme(theme) {
 export function onThemeChange(cb) {
   const mo = new MutationObserver(cb);
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-  const mq = window.matchMedia(DARK_QUERY);
-  mq.addEventListener("change", cb);
-  return () => {
-    mo.disconnect();
-    mq.removeEventListener("change", cb);
-  };
+  return () => mo.disconnect();
 }
 
 export const cssVar = (name) =>
