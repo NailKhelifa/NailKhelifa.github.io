@@ -213,51 +213,6 @@ a.ink:hover {
   color: var(--ink-2);
 }
 
-.index {
-  margin-top: 30px;
-  border-top: 1px solid var(--rule);
-}
-.index ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.index a {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: baseline;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--ink-2);
-  transition: color 0.2s ease, padding 0.25s ease;
-}
-.ix-title {
-  font-size: 17px;
-}
-.ix-mark {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--accent);
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-.index a:hover {
-  color: var(--ink);
-  padding-left: 6px;
-}
-.index a.on {
-  color: var(--ink);
-}
-.index a.on .ix-title {
-  font-style: italic;
-}
-.index a.on .ix-mark {
-  opacity: 1;
-  transform: none;
-}
-
 .links {
   display: flex;
   flex-wrap: wrap;
@@ -617,9 +572,6 @@ a.ink:hover {
   .aside {
     position: static;
     max-width: 440px;
-  }
-  .index {
-    display: none;
   }
   .pub::before {
     left: -10px;

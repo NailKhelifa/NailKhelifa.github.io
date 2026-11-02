@@ -6,7 +6,7 @@ import { getTheme, onThemeChange, setTheme } from "./theme.js";
 // ==== Profile ====
 const PROFILE = {
   name: "Naïl B. Khelifa",
-  tagline: "Probabilistic Machine Learning · Department of Engineering · Trinity College, University of Cambridge",
+  tagline: "Department of Engineering · Trinity College, University of Cambridge",
   scholar: "https://scholar.google.com/citations?user=vOo9y_cAAAAJ&hl=fr",
   github: "https://github.com/NailKhelifa",
   linkedin: "https://www.linkedin.com/in/nailkhelifa",
@@ -14,15 +14,6 @@ const PROFILE = {
   cv: "/Khelifa_CV.pdf",
   email: ["nbk24", "cam.ac.uk"],
 };
-
-const SECTIONS = [
-  { id: "preamble", title: "Preamble" },
-  { id: "research", title: "Research" },
-  { id: "publications", title: "Publications" },
-  { id: "teaching", title: "Teaching" },
-  { id: "trajectory", title: "Trajectory" },
-  { id: "correspondence", title: "Correspondence" },
-];
 
 // ==== Papers ====
 const PAPERS = [
@@ -134,21 +125,6 @@ function useInView(threshold = 0.12) {
   return [ref, seen];
 }
 
-function useActiveSection(ids) {
-  const [active, setActive] = useState(ids[0]);
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
-      },
-      { rootMargin: "-35% 0px -60% 0px" }
-    );
-    ids.forEach((id) => io.observe(document.getElementById(id)));
-    return () => io.disconnect();
-  }, [ids]);
-  return active;
-}
-
 // ==== Components ====
 function ThemeToggle() {
   const [theme, set] = useState(getTheme);
@@ -238,10 +214,7 @@ function Paper({ paper, index }) {
   );
 }
 
-const SECTION_IDS = SECTIONS.map((s) => s.id);
-
 export default function AcademicSite() {
-  const active = useActiveSection(SECTION_IDS);
 
   return (
     <>
@@ -259,19 +232,6 @@ export default function AcademicSite() {
               <Scramble text={PROFILE.name} duration={1400} delay={250} />
             </h1>
             <p className="tagline">{PROFILE.tagline}</p>
-
-            <nav className="index" aria-label="Sections">
-              <ol>
-                {SECTIONS.map((s) => (
-                  <li key={s.id}>
-                    <a href={`#${s.id}`} className={active === s.id ? "on" : undefined} aria-current={active === s.id ? "location" : undefined}>
-                      <span className="ix-title">{s.title}</span>
-                      <span className="ix-mark">←</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
 
             <div className="links">
               <a className="bracket" href={PROFILE.cv} target="_blank" rel="noopener noreferrer">CV</a>
@@ -337,7 +297,7 @@ export default function AcademicSite() {
               </ul>
             </Section>
 
-            <Section id="trajectory" title="Trajectory">
+            <Section id="trajectory" title="Previously…">
               <div className="prose">
                 <p>
                   Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory
