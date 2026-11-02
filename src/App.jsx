@@ -260,29 +260,16 @@ const SECTION_IDS = SECTIONS.map((s) => s.id);
 
 export default function AcademicSite() {
   const active = useActiveSection(SECTION_IDS);
-  const [emailCopied, setEmailCopied] = useState(false);
   const year = new Date().getFullYear();
-
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(PROFILE.email.join("@"));
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 1400);
-    } catch {
-      setEmailCopied(false);
-    }
-  };
 
   return (
     <>
       <FlowField />
       <div className="shell">
         <header className="topbar">
-          <span className="tb-left">N·B·K</span>
-          <span className="tb-mid">52.2070° N &nbsp;0.1166° E</span>
           <span className="tb-right">
             <span className="tb-clock">
-              Cambridge <Clock />
+              <Clock />
             </span>
             <ThemeToggle />
           </span>
@@ -290,7 +277,7 @@ export default function AcademicSite() {
 
         <div className="layout">
           <aside className="aside">
-            <AsciiPortrait src={PROFILE.photo} alt={`Portrait of ${PROFILE.name} rendered in ASCII characters`} />
+            <AsciiPortrait src={PROFILE.photo} alt={`Portrait of ${PROFILE.name} drawn as a vector field`} />
 
             <p className="kicker">PhD Student · Cambridge</p>
             <h1 className="name">
@@ -350,7 +337,7 @@ export default function AcademicSite() {
               </ul>
             </Section>
 
-            <Section id="publications" num="III" title="Publications" meta={`${String(PAPERS.length).padStart(2, "0")} entries`}>
+            <Section id="publications" num="III" title="Publications">
               <ol className="pubs">
                 {PAPERS.map((p, i) => (
                   <Paper key={p.id} paper={p} index={i} />
@@ -418,19 +405,12 @@ export default function AcademicSite() {
                 <span className="contact-addr">
                   {PROFILE.email[0]} <span className="at">(at)</span> {PROFILE.email[1]}
                 </span>
-                <button type="button" className="bracket" onClick={copyEmail}>
-                  {emailCopied ? "copied ✓" : "copy address"}
-                </button>
               </div>
-              <p className="contact-note">Department of Engineering · Trinity College · University of Cambridge</p>
             </Section>
           </main>
         </div>
 
         <footer className="colophon">
-          <p>
-            The ink in the margins is advected by a divergence-free field, ∇·v = 0; your cursor is a point vortex.
-          </p>
           <p className="col-sign">
             © {toRoman(year)} · {PROFILE.name}
           </p>

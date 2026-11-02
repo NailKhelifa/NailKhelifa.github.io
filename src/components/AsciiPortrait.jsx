@@ -1,26 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { cssVar, getTheme, hexToRgb, mixRgb, onThemeChange, prefersReducedMotion } from "../theme.js";
 
-// The portrait is drawn in glyphs and "sampled" by a reverse diffusion:
-//   x_t = sqrt(ᾱ_t) · x_0 + sqrt(1 − ᾱ_t) · ε,   ᾱ_t = cos²(πt/2)
-// with t running 1 → 0. Hovering re-noises cells locally (forward process).
+// The portrait is drawn as a vector field and "sampled" by a reverse diffusion
+// on the 2-D vectors:
+//   x_t = sqrt(ᾱ_t) · x_0 + sqrt(1 − ᾱ_t) · σε,   ᾱ_t = cos²(πt/2)
+// with t running 1 → 0. Each x_0 points along v = ∇⊥L (the luminance rotated
+// by 90°, hence divergence-free) with a length set by the ink at that cell.
+// Hovering re-noises cells locally (forward process).
 
-const MONO = '"JetBrains Mono", "Apple Symbols", "Segoe UI Symbol", ui-monospace, monospace';
-
-// Glyph pools; order doesn't matter, each glyph's ink coverage is measured
-// in the browser and the pool is sorted into a tonal ramp.
-const GLYPH_SETS = [
-  { name: "astral", sample: "☉☽✶", font: (px) => `${px}px ${MONO}`, pool: "·⋅∘◦○◌⊙⊚☉☽✧✦✶✷✹❂◍◉●" },
-  { name: "calculus", sample: "∂∇∫", font: (px) => `${px}px ${MONO}`, pool: "·∙∶∴∷∘∝∂∫∮∇∆∑∏∞≈≡⊕⊗⊛ΨΦΩ∰" },
-  { name: "greek", sample: "ψξζ", font: (px) => `italic ${px * 1.08}px "EB Garamond", serif`, pool: "·ιιντυοσαερκχγφψξζβθδλμπΩΦΨΘΞ" },
-  { name: "engraving", sample: "╱╳┼", font: (px) => `${px}px ${MONO}`, pool: "·┄╌─╴╱╲╳┼╋▖▞▚░▒▓" },
-];
-
-const COLS = 66;
-const CELL_ASPECT = 0.6; // monospace advance / line height
-const SUPERSAMPLE = 4;
+const COLS = 46;
+const SUPERSAMPLE = 6;
 const DURATION = 3400;
 const T_STEPS = 1000;
+const SIGMA = 0.6; // scale of the terminal noise relative to a full-ink vector
 const RHO = 0.82; // temporal correlation of ε between frames (OU noise)
 const DECAY = 0.93; // decay of local perturbations per frame
 const CROP_TOP = 0.13; // empty sky above the head
@@ -37,67 +29,49 @@ function gaussian() {
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * Math.random());
 }
 
-// Sorts a glyph pool by measured ink coverage and builds a lookup from tone
-// (0–255) to the run of glyphs whose coverage is close to that tone; each
-// cell picks within the run with its own fixed jitter, so equal tones get
-// varied but stable glyphs.
-function buildRamp(set) {
-  const S = 48;
-  const W = Math.round(S * CELL_ASPECT);
-  const c = document.createElement("canvas");
-  c.width = W;
-  c.height = S;
-  const g = c.getContext("2d", { willReadFrequently: true });
-  g.font = set.font(S);
-  g.textAlign = "center";
-  g.textBaseline = "middle";
-
-  const measured = [];
-  for (const ch of new Set(Array.from(set.pool))) {
-    if (g.measureText(ch).width > W * 1.25) continue; // would spill over neighbours
-    g.clearRect(0, 0, W, S);
-    g.fillText(ch, W / 2, S / 2);
-    const d = g.getImageData(0, 0, W, S).data;
-    let s = 0;
-    for (let k = 3; k < d.length; k += 4) s += d[k];
-    if (s > 0) measured.push({ ch, cov: s / (255 * W * S) });
+// 3×3 box blur on a COLS × rows grid, clamped at the borders
+function blur(src, rows) {
+  const out = new Float32Array(src.length);
+  for (let r = 0; r < rows; r++) {
+    for (let q = 0; q < COLS; q++) {
+      let s = 0;
+      let m = 0;
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dq = -1; dq <= 1; dq++) {
+          const rr = r + dr;
+          const qq = q + dq;
+          if (rr < 0 || rr >= rows || qq < 0 || qq >= COLS) continue;
+          s += src[rr * COLS + qq];
+          m++;
+        }
+      }
+      out[r * COLS + q] = s / m;
+    }
   }
-  measured.sort((a, b) => a.cov - b.cov);
-  const max = measured[measured.length - 1].cov;
-  const glyphs = [" ", ...measured.map((m) => m.ch)];
-  const cov = [0, ...measured.map((m) => m.cov / max)];
-
-  // tone picks a rank (like a classic ASCII ramp); glyphs of near-equal
-  // coverage around that rank are interchangeable
-  const lo = new Uint8Array(256);
-  const span = new Uint8Array(256);
-  for (let v = 0; v < 256; v++) {
-    const best = Math.round(Math.pow(v / 255, 0.9) * (glyphs.length - 1));
-    if (best === 0) continue;
-    let a = best;
-    let b = best;
-    while (a > 1 && Math.abs(cov[a - 1] - cov[best]) < 0.06) a--;
-    while (b < cov.length - 1 && Math.abs(cov[b + 1] - cov[best]) < 0.06) b++;
-    lo[v] = a;
-    span[v] = b - a + 1;
-  }
-  return { glyphs, lo, span };
+  return out;
 }
 
-// ?glyphs=<name> wins, then the viewer's last choice, then the first set
-const loadGlyphSet = () => {
-  let name = new URLSearchParams(location.search).get("glyphs");
-  try {
-    name ??= localStorage.getItem("glyphs");
-  } catch {
-    // storage unavailable
+// central-difference gradient of a COLS × rows grid
+function gradient(f, rows) {
+  const gx = new Float32Array(f.length);
+  const gy = new Float32Array(f.length);
+  for (let r = 0; r < rows; r++) {
+    for (let q = 0; q < COLS; q++) {
+      const i = r * COLS + q;
+      const qa = Math.max(0, q - 1);
+      const qb = Math.min(COLS - 1, q + 1);
+      const ra = Math.max(0, r - 1);
+      const rb = Math.min(rows - 1, r + 1);
+      gx[i] = (f[r * COLS + qb] - f[r * COLS + qa]) / (qb - qa);
+      gy[i] = (f[rb * COLS + q] - f[ra * COLS + q]) / (rb - ra);
+    }
   }
-  return Math.max(0, GLYPH_SETS.findIndex((g) => g.name === name));
-};
+  return [gx, gy];
+}
 
-// Tone of the portrait on a COLS × rows grid: supersampled, sharpened,
-// contrast-stretched, and faded by an elliptical vignette so the face
-// emerges from blank space rather than from the busy background.
+// Tone and flow of the portrait on a COLS × rows grid of square cells:
+// supersampled, sharpened, contrast-stretched, and faded by an elliptical
+// vignette so the face emerges from blank space rather than the background.
 async function loadPortrait(src) {
   const img = new Image();
   img.src = src;
@@ -105,7 +79,7 @@ async function loadPortrait(src) {
 
   const srcY = img.height * CROP_TOP;
   const srcH = img.height - srcY;
-  const rows = Math.round(COLS * (srcH / img.width) * CELL_ASPECT);
+  const rows = Math.round(COLS * (srcH / img.width));
   const w = COLS * SUPERSAMPLE;
   const h = rows * SUPERSAMPLE;
   const c = document.createElement("canvas");
@@ -127,27 +101,34 @@ async function loadPortrait(src) {
   }
   for (let i = 0; i < n; i++) lum[i] /= SUPERSAMPLE * SUPERSAMPLE;
 
+  const box = blur(lum, rows);
   const sharp = new Float32Array(n);
-  for (let r = 0; r < rows; r++) {
-    for (let q = 0; q < COLS; q++) {
-      let s = 0;
-      let m = 0;
-      for (let dr = -1; dr <= 1; dr++) {
-        for (let dq = -1; dq <= 1; dq++) {
-          const rr = r + dr;
-          const qq = q + dq;
-          if (rr < 0 || rr >= rows || qq < 0 || qq >= COLS) continue;
-          s += lum[rr * COLS + qq];
-          m++;
-        }
-      }
-      const i = r * COLS + q;
-      sharp[i] = lum[i] + 0.8 * (lum[i] - s / m);
-    }
+  for (let i = 0; i < n; i++) sharp[i] = lum[i] + 0.8 * (lum[i] - box[i]);
+
+  // direction: fine-scale gradient for features, coarse-scale for the
+  // overall form, so flat regions still get a coherent orientation
+  let coarse = box;
+  for (let k = 0; k < 4; k++) coarse = blur(coarse, rows);
+  const [fx, fy] = gradient(box, rows);
+  const [cx, cy] = gradient(coarse, rows);
+  const dirX = new Float32Array(n);
+  const dirY = new Float32Array(n);
+  const edge = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const gx = fx[i] + 1.5 * cx[i];
+    const gy = fy[i] + 1.5 * cy[i];
+    const g = Math.hypot(gx, gy);
+    // rotate by 90°: v = (∂L/∂y, −∂L/∂x) runs along the isophotes
+    dirX[i] = g > 1e-6 ? gy / g : 1;
+    dirY[i] = g > 1e-6 ? -gx / g : 0;
+    edge[i] = Math.hypot(fx[i], fy[i]);
   }
+  const edges = Array.from(edge).sort((a, b) => a - b);
+  const e95 = edges[Math.floor(n * 0.95)] || 1;
+  for (let i = 0; i < n; i++) edge[i] = clamp01(edge[i] / e95);
 
   // head-and-shoulders silhouette: union of three soft ellipses
-  const ell = (u, v, cx, cy, rx, ry) => Math.hypot((u - cx) / rx, (v - cy) / ry);
+  const ell = (u, v, ex, ey, rx, ry) => Math.hypot((u - ex) / rx, (v - ey) / ry);
   const mask = new Float32Array(n);
   const face = [];
   for (let r = 0; r < rows; r++) {
@@ -173,7 +154,7 @@ async function loadPortrait(src) {
   const tone = new Float32Array(n);
   for (let i = 0; i < n; i++) tone[i] = clamp01((sharp[i] - lo) / (hi - lo));
 
-  return { rows, tone, mask };
+  return { rows, tone, edge, mask, dirX, dirY };
 }
 
 export default function AsciiPortrait({ src, alt }) {
@@ -182,8 +163,6 @@ export default function AsciiPortrait({ src, alt }) {
   const tRef = useRef(null);
   const stepRef = useRef(null);
   const resampleRef = useRef(() => {});
-  const glyphRef = useRef(() => {});
-  const [glyphSet, setGlyphSet] = useState(loadGlyphSet);
 
   useEffect(() => {
     const reduced = prefersReducedMotion();
@@ -192,29 +171,26 @@ export default function AsciiPortrait({ src, alt }) {
     const st = {
       data: null,
       x0: null,
-      eps: null,
+      y0: null,
+      ex: null,
+      ey: null,
       local: null,
-      chars: null,
-      jitter: null,
-      buckets: null,
-      set: loadGlyphSet(),
-      ramp: null,
-      counts: new Int32Array(4),
       palette: [],
       sampling: false,
       start: 0,
       raf: 0,
-      cellW: 6,
-      cellH: 10,
+      cell: 6,
     };
     let alive = true;
 
     function setInk() {
       const dark = getTheme() === "dark";
-      const { tone, mask } = st.data;
+      const { tone, edge, mask, dirX, dirY } = st.data;
       for (let i = 0; i < tone.length; i++) {
         const ink = dark ? tone[i] : 1 - tone[i];
-        st.x0[i] = 2 * Math.pow(ink, 1.15) * mask[i] - 1;
+        const m = clamp01(Math.pow(ink, 1.15) + 0.35 * edge[i]) * mask[i];
+        st.x0[i] = m * dirX[i];
+        st.y0[i] = m * dirY[i];
       }
       const ink = hexToRgb(cssVar("--ink"));
       const accent = hexToRgb(cssVar("--accent"));
@@ -224,9 +200,8 @@ export default function AsciiPortrait({ src, alt }) {
     function size() {
       const w = wrapRef.current.clientWidth;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      st.cellW = w / COLS;
-      st.cellH = st.cellW / CELL_ASPECT;
-      const h = st.cellH * st.data.rows;
+      st.cell = w / COLS;
+      const h = st.cell * st.data.rows;
       canvas.style.height = `${h}px`;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -235,8 +210,7 @@ export default function AsciiPortrait({ src, alt }) {
 
     // Advances one frame; returns whether anything is still moving.
     function frame(now) {
-      const { x0, eps, local, chars, jitter, buckets, counts } = st;
-      const { glyphs, lo, span } = st.ramp;
+      const { x0, y0, ex, ey, local } = st;
       const n = x0.length;
 
       let gt = 0;
@@ -249,37 +223,61 @@ export default function AsciiPortrait({ src, alt }) {
       let busy = st.sampling;
       const sq = Math.sqrt(1 - RHO * RHO);
       for (let i = 0; i < n; i++) {
-        eps[i] = RHO * eps[i] + sq * gaussian();
+        ex[i] = RHO * ex[i] + sq * gaussian();
+        ey[i] = RHO * ey[i] + sq * gaussian();
         local[i] *= DECAY;
         if (local[i] > 0.01) busy = true;
         else local[i] = 0;
       }
 
-      counts.fill(0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.lineCap = "round";
+      const L = st.cell * 1.3; // a full-ink arrow slightly overlaps its neighbours
+      // one path per (colour, stroke width) bucket
+      const paths = Array.from({ length: 12 }, () => new Path2D());
       for (let i = 0; i < n; i++) {
         const ti = local[i] > gt ? local[i] : gt;
-        let x = x0[i];
+        let vx = x0[i];
+        let vy = y0[i];
         if (ti > 0) {
           const c = Math.cos((Math.PI / 2) * ti);
-          x = c * x + Math.sqrt(1 - c * c) * eps[i];
+          const s = Math.sqrt(1 - c * c) * SIGMA;
+          vx = c * vx + s * ex[i];
+          vy = c * vy + s * ey[i];
         }
-        const v = (clamp01((x + 1) / 2) * 255) | 0;
-        if (span[v] === 0) continue;
-        chars[i] = lo[v] + ((jitter[i] * span[v]) | 0);
+        let m = Math.hypot(vx, vy);
+        if (m < 0.06) continue;
+        if (m > 1) {
+          vx /= m;
+          vy /= m;
+          m = 1;
+        }
+        const cx = ((i % COLS) + 0.5) * st.cell;
+        const cy = (((i / COLS) | 0) + 0.5) * st.cell;
+        const hx = (vx * L) / 2;
+        const hy = (vy * L) / 2;
         const b = ti < 0.06 ? 0 : ti < 0.3 ? 1 : ti < 0.6 ? 2 : 3;
-        buckets[b][counts[b]++] = i;
+        const wb = m < 0.35 ? 0 : m < 0.7 ? 1 : 2;
+        const p = paths[b * 3 + wb];
+        p.moveTo(cx - hx, cy - hy);
+        p.lineTo(cx + hx, cy + hy);
+        if (m > 0.3) {
+          // arrowhead: two barbs at ±28° behind the tip
+          const k = 0.36;
+          const ca = 0.883;
+          const sa = 0.469;
+          const tx = cx + hx;
+          const ty = cy + hy;
+          p.moveTo(tx - k * (ca * 2 * hx - sa * 2 * hy), ty - k * (sa * 2 * hx + ca * 2 * hy));
+          p.lineTo(tx, ty);
+          p.lineTo(tx - k * (ca * 2 * hx + sa * 2 * hy), ty - k * (-sa * 2 * hx + ca * 2 * hy));
+        }
       }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = GLYPH_SETS[st.set].font(st.cellH);
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
       for (let b = 0; b < 4; b++) {
-        ctx.fillStyle = st.palette[b];
-        const list = buckets[b];
-        for (let k = 0; k < counts[b]; k++) {
-          const i = list[k];
-          ctx.fillText(glyphs[chars[i]], ((i % COLS) + 0.5) * st.cellW, (((i / COLS) | 0) + 0.5) * st.cellH);
+        ctx.strokeStyle = st.palette[b];
+        for (let wb = 0; wb < 3; wb++) {
+          ctx.lineWidth = [0.55, 0.9, 1.3][wb] * Math.max(1, st.cell / 7);
+          ctx.stroke(paths[b * 3 + wb]);
         }
       }
 
@@ -300,38 +298,30 @@ export default function AsciiPortrait({ src, alt }) {
     function resample() {
       if (!st.data) return;
       if (reduced) return kick();
-      for (let i = 0; i < st.eps.length; i++) st.eps[i] = gaussian();
+      for (let i = 0; i < st.ex.length; i++) {
+        st.ex[i] = gaussian();
+        st.ey[i] = gaussian();
+      }
       st.sampling = true;
       st.start = performance.now();
       kick();
     }
     resampleRef.current = resample;
 
-    glyphRef.current = (k) => {
-      st.set = k;
-      st.ramp = buildRamp(GLYPH_SETS[k]);
-      try {
-        localStorage.setItem("glyphs", GLYPH_SETS[k].name);
-      } catch {
-        // the choice just won't persist
-      }
-      resample();
-    };
-
     function onMove(e) {
       if (reduced || !st.data) return;
       const rect = canvas.getBoundingClientRect();
       const px = e.clientX - rect.left;
       const py = e.clientY - rect.top;
-      const R = 3.6 * st.cellH;
-      const q0 = Math.max(0, Math.floor((px - 2 * R) / st.cellW));
-      const q1 = Math.min(COLS - 1, Math.ceil((px + 2 * R) / st.cellW));
-      const r0 = Math.max(0, Math.floor((py - 2 * R) / st.cellH));
-      const r1 = Math.min(st.data.rows - 1, Math.ceil((py + 2 * R) / st.cellH));
+      const R = 3.2 * st.cell;
+      const q0 = Math.max(0, Math.floor((px - 2 * R) / st.cell));
+      const q1 = Math.min(COLS - 1, Math.ceil((px + 2 * R) / st.cell));
+      const r0 = Math.max(0, Math.floor((py - 2 * R) / st.cell));
+      const r1 = Math.min(st.data.rows - 1, Math.ceil((py + 2 * R) / st.cell));
       for (let r = r0; r <= r1; r++) {
         for (let q = q0; q <= q1; q++) {
-          const dx = (q + 0.5) * st.cellW - px;
-          const dy = (r + 0.5) * st.cellH - py;
+          const dx = (q + 0.5) * st.cell - px;
+          const dy = (r + 0.5) * st.cell - py;
           const v = 0.7 * Math.exp(-(dx * dx + dy * dy) / (R * R));
           const i = r * COLS + q;
           if (v > st.local[i]) st.local[i] = v;
@@ -361,26 +351,16 @@ export default function AsciiPortrait({ src, alt }) {
     });
 
     (async () => {
-      try {
-        await Promise.all([
-          document.fonts?.load('16px "JetBrains Mono"'),
-          document.fonts?.load('italic 16px "EB Garamond"'),
-        ]);
-      } catch {
-        // fall back to the system monospace
-      }
       const data = await loadPortrait(src);
       if (!alive) return;
       const n = COLS * data.rows;
       Object.assign(st, {
         data,
         x0: new Float32Array(n),
-        eps: new Float32Array(n),
+        y0: new Float32Array(n),
+        ex: new Float32Array(n),
+        ey: new Float32Array(n),
         local: new Float32Array(n),
-        chars: new Uint8Array(n),
-        jitter: Float32Array.from({ length: n }, Math.random),
-        ramp: buildRamp(GLYPH_SETS[st.set]),
-        buckets: [0, 1, 2, 3].map(() => new Int32Array(n)),
       });
       setInk();
       size();
@@ -416,27 +396,6 @@ export default function AsciiPortrait({ src, alt }) {
         <span ref={tRef}>t = 1.000  ᾱ = 0.000</span>
         <span ref={stepRef}>step 0000/{T_STEPS}</span>
       </div>
-      <figcaption>
-        <span className="fig-no">Fig. 0</span> The author, drawn in{" "}
-        <span className="fig-glyphs">{GLYPH_SETS[glyphSet].sample}</span> by reverse diffusion from 𝒩(0, I).
-        <span className="fig-actions">
-          <button type="button" className="bracket" onClick={() => resampleRef.current()}>
-            resample
-          </button>
-          <button
-            type="button"
-            className="bracket"
-            title="Change the glyphs the portrait is drawn with"
-            onClick={() => {
-              const next = (glyphSet + 1) % GLYPH_SETS.length;
-              setGlyphSet(next);
-              glyphRef.current(next);
-            }}
-          >
-            glyphs: {GLYPH_SETS[glyphSet].name}
-          </button>
-        </span>
-      </figcaption>
     </figure>
   );
 }
