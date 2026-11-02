@@ -1,76 +1,29 @@
-import React from "react";
-
-
-// === Global link style (gold + subtle hover) ===
-const linkStyle =
-  "text-[#b38b1d] font-medium hover:underline hover:decoration-[#b38b1d]/70 transition";
-
+import { useEffect, useRef, useState } from "react";
+import AsciiPortrait from "./components/AsciiPortrait.jsx";
+import FlowField from "./components/FlowField.jsx";
+import Scramble from "./components/Scramble.jsx";
+import { getTheme, onThemeChange, setTheme } from "./theme.js";
 
 // ==== Profile ====
 const PROFILE = {
   name: "Naïl B. Khelifa",
-  shortName: "Naïl Khelifa",
-  tagline:
-    "Trinity College, University of Cambridge · Department of Engineering · Probabilistic Machine Learning",
+  tagline: "Probabilistic Machine Learning · Department of Engineering · Trinity College, University of Cambridge",
   scholar: "https://scholar.google.com/citations?user=vOo9y_cAAAAJ&hl=fr",
   github: "https://github.com/NailKhelifa",
   linkedin: "https://www.linkedin.com/in/nailkhelifa",
   photo: "/portrait.jpg",
   cv: "/Khelifa_CV.pdf",
-  intro: `
-<p>
-Hi, I’m Naïl — a first-year PhD student at the Department of Engineering, University of Cambridge. 
-I am fortunate to be supervised by <em>Prof. Ramji Venkataramanan</em> (Probabilistic Systems, Information and Inference Group) and advised by 
-<em>Prof. Rich Turner</em> (Machine Learning Group).
-</p>
-
-<p>
-Broadly speaking, my research focuses on the theoretical foundations (geometry, structure of errors, sampling) of <em>flow/diffusion-based models<em>. I am also interested
-in understanding how to train generative models on synthetic data.
-</p>
-
-<p>
-I am grateful to be recipient of the <em>G-Research Trinity College PhD Scholarship</em>.  
-</p>
-`,
+  email: ["nbk24", "cam.ac.uk"],
 };
 
-const INTRO_PARAS = [
-  <>
-    Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong> supervised by
-    <a href="https://rv285.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Ramji Venkataramanan</a> (Probabilistic Systems, Information and
-    Inference Group) and <a href="https://rich-turner-group.github.io" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Rich Turner</a> (Machine Learning Group).
-  </>,
-  <>
-    I am grateful to be the recipient of the <strong>G-Research Trinity College PhD Scholarship</strong>.
-  </>,
-  <>
-    <em>Research.</em> My research focuses on the theoretical foundations (geometry, structure of errors, sampling) of <em>flow/diffusion-based models</em>. I am also interested
-  in understanding how to train generative models on synthetic data.
-  </>,
-  <>
-    <em>Teaching.</em> I supervise third year Trinity engineers (Part IIA) for <em>Information Theory and Coding</em> (3F7) and <em>Inference</em> (3F8). At a Master's level, I co-supervise a thesis in the <em>MPhil in Machine Learning and Machine Intelligence </em> (MLMI) at Cambridge, on "Learning Heavy-Tailed Distributions with Diffusion Models".
-  </>,
-  <>
-    <em>Previous Studies.</em> Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory class system at Lycée Henri IV, 
-    before entering a dual degree program between HEC Paris and ENSAE Paris. I also pursued a Master’s degree in Mathematics at Sorbonne Université, followed by a dual degree between École Normale
-    Supérieure Paris-Saclay (MSc Mathématiques, Vision, Apprentissage) and ENSAE’s specialization in Data Science, Statistics, and Learning.
-    Throughout these formative years, I had the privilege of being guided by remarkable mentors — including <a href="https://www.math.ucla.edu/~mihai/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Mihai Cucuringu </a> 
-    (Department of Mathematics, UCLA and Department of Statistics, Oxford), <a href="https://ferdiasherry.com" target="_blank" rel="noopener noreferrer" className={linkStyle}>Dr. Ferdia Sherry</a> (Department of Applied Maths and Theoretical Physics, Cambridge), <a href="https://perso.telecom-paristech.fr/fdalche/" target="_blank" rel="noopener noreferrer" className={linkStyle}>Prof. Florence d'Alché-Buc</a> (LTCI, Télécom Paris)
-    and <a href="https://remi.flamary.com" target="_blank" rel="noopener noreferrer" className={linkStyle}> Prof. Rémi Flamary</a> (Centre de Mathématiques Appliquées (CMAP), École Polytechnique) — whose influence strengthened my resolve to dedicate myself fully to research. In short, here is my background (full{" "}
-    <a href={PROFILE.cv} target="_blank" rel="noopener noreferrer" className={linkStyle}>CV here</a>):
-
-  </>,
+const SECTIONS = [
+  { id: "preamble", num: "I", title: "Preamble" },
+  { id: "research", num: "II", title: "Research" },
+  { id: "publications", num: "III", title: "Publications" },
+  { id: "teaching", num: "IV", title: "Teaching" },
+  { id: "trajectory", num: "V", title: "Trajectory" },
+  { id: "correspondence", num: "VI", title: "Correspondence" },
 ];
-
-const INTRO_BULLETS = [
-  "2025-    : PhD Student, Department of Engineering, University of Cambridge",
-  "2024-2025: MSc Mathématiques, Vision, Apprentissage (MVA), ENS Paris Saclay",
-  "2022-2023: Master's in Mathematics, Sorbonne Université",
-  "2021-2025: Dual Degree Between ENSAE Paris and HEC Paris",
-  "2019-2021: Preparatory Classes, Lycée Henri IV"
-];
-
 
 // ==== Papers ====
 const PAPERS = [
@@ -78,183 +31,411 @@ const PAPERS = [
     id: "khelifa2026lim_recursively_trained",
     title: "Recursively Trained Diffusion Models: Limiting Collapse Distribution and Spectral Characterization",
     authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
-    venue: "The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS), 2026",
-    award: "🏅 Spotlight",
+    venue: "The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS)",
+    short: "NeurIPS",
+    year: 2026,
+    award: "Spotlight",
     link: "https://arxiv.org/abs/2606.13796",
+    linkLabel: "arXiv",
   },
   {
     id: "khelifa2026div_free",
     title: "Diffusion Models Observe Only Gradients: A Geometric Perspective on Score Matching Errors",
     authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
-    venue: "The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS), 2026",
+    venue: "The Fortieth Annual Conference on Neural Information Processing Systems (NeurIPS)",
+    short: "NeurIPS",
+    year: 2026,
     link: "https://arxiv.org/abs/2606.06179",
+    linkLabel: "arXiv",
   },
   {
     id: "khelifa2026modelcollapse",
     title: "Quantifying Error Propagation and Model Collapse in Diffusion Models",
     authors: "Naïl B. Khelifa, Richard E. Turner, Ramji Venkataramanan",
-    venue: "Forty-Third International Conference on Machine Learning (ICML), 2026",
+    venue: "Forty-Third International Conference on Machine Learning (ICML)",
+    short: "ICML",
+    year: 2026,
     link: "https://arxiv.org/abs/2602.16601",
+    linkLabel: "arXiv",
   },
   {
     id: "khelifa2025tweedie",
     title: "Enhanced Denoising and Convergent Regularisation Using Tweedie Scaling",
     authors: "Naïl B. Khelifa, Carola-Bibiane Schönlieb, Ferdia Sherry",
-    venue: "Scale Space and Variational Methods in Computer Vision (SSVM), 2025",
+    venue: "Scale Space and Variational Methods in Computer Vision (SSVM)",
+    short: "SSVM",
+    year: 2025,
     link: "https://link.springer.com/chapter/10.1007/978-3-031-92366-1_15",
+    linkLabel: "Springer",
   },
   {
     id: "khelifa2024portfolio",
-    title:
-      "Cluster-driven Hierarchical Representation of Large Asset Universes for Optimal Portfolio Construction",
+    title: "Cluster-driven Hierarchical Representation of Large Asset Universes for Optimal Portfolio Construction",
     authors: "Naïl B. Khelifa, Jérôme Allier, Mihai Cucuringu",
-    venue: "ACM International Conference on AI in Finance (ICAIF ’24), 2024",
-    award: "🏅 Best Paper Award — Runner-up",
+    venue: "ACM International Conference on AI in Finance (ICAIF ’24)",
+    short: "ICAIF",
+    year: 2024,
+    award: "Best Paper Award — Runner-up",
     link: "https://dl.acm.org/doi/10.1145/3677052.3698676",
+    linkLabel: "ACM DL",
   },
 ];
 
-// ==== Components ====
-const LinkButton = ({ href, children }) => (
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="border border-gray-400/40 px-4 py-1.5 rounded-sm text-[13px] text-gray-700 tracking-wide hover:bg-gray-100/50 transition"
-  >
+const TRAJECTORY = [
+  { from: "2025", to: null, what: "PhD, Department of Engineering", where: "University of Cambridge" },
+  { from: "2024", to: "2025", what: "MSc Mathématiques, Vision, Apprentissage (MVA)", where: "ENS Paris-Saclay" },
+  { from: "2022", to: "2023", what: "Master's in Mathematics", where: "Sorbonne Université" },
+  { from: "2021", to: "2025", what: "Dual Degree", where: "ENSAE Paris & HEC Paris" },
+  { from: "2019", to: "2021", what: "Preparatory Classes", where: "Lycée Henri IV" },
+];
+
+// ==== Helpers ====
+const A = ({ href, children }) => (
+  <a className="ink" href={href} target="_blank" rel="noopener noreferrer">
     {children}
   </a>
 );
 
-// === Highlight your name dynamically ===
-const highlightName = (authors) => {
-  const nameRegex = new RegExp(PROFILE.shortName, "gi");
-  return authors.replace(nameRegex, `<strong>${PROFILE.shortName}</strong>`);
-};
+function toRoman(n) {
+  const map = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let out = "";
+  for (const [v, s] of map) while (n >= v) (out += s), (n -= v);
+  return out;
+}
 
-const PaperCard = ({ paper }) => (
-  <div className="border border-gray-200/60 rounded-md p-4 bg-white/80 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md">
-    <h3 className="text-lg font-medium text-gray-800 font-serif">
-      <a
-        href={paper.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:text-yellow-700 transition"
-      >
-        {paper.title}
-      </a>
-    </h3>
+function toBibtex(p) {
+  const authors = p.authors
+    .split(", ")
+    .map((a) => {
+      const parts = a.split(" ");
+      const last = parts.pop();
+      return `${last}, ${parts.join(" ")}`;
+    })
+    .join(" and ");
+  return [
+    `@inproceedings{${p.id},`,
+    `  title     = {${p.title}},`,
+    `  author    = {${authors}},`,
+    `  booktitle = {${p.venue}},`,
+    `  year      = {${p.year}},`,
+    `  url       = {${p.link}}`,
+    `}`,
+  ].join("\n");
+}
 
-    <p
-      className="text-sm text-gray-600 mt-1"
-      dangerouslySetInnerHTML={{ __html: highlightName(paper.authors) }}
-    />
+function useInView(threshold = 0.12) {
+  const ref = useRef(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { threshold }
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [threshold]);
+  return [ref, seen];
+}
 
-    <p className="text-sm text-gray-500 mt-1 italic">{paper.venue}</p>
+function useActiveSection(ids) {
+  const [active, setActive] = useState(ids[0]);
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+      },
+      { rootMargin: "-35% 0px -60% 0px" }
+    );
+    ids.forEach((id) => io.observe(document.getElementById(id)));
+    return () => io.disconnect();
+  }, [ids]);
+  return active;
+}
 
-    {paper.award && (
-      <p
-        className="text-sm mt-2 text-[#b38b1d] italic"
-        style={{ fontFamily: "'Cormorant Garamond', serif" }}
-      >
-        {paper.award}
-      </p>
-    )}
-  </div>
-);
+// ==== Components ====
+function Clock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return now.toLocaleTimeString("en-GB", { timeZone: "Europe/London", timeZoneName: "short", hour12: false });
+}
+
+function ThemeToggle() {
+  const [theme, set] = useState(getTheme);
+  useEffect(() => onThemeChange(() => set(getTheme())), []);
+  const next = theme === "dark" ? "light" : "dark";
+  return (
+    <button type="button" className="bracket" onClick={() => setTheme(next)} aria-label={`Switch to ${next} theme`}>
+      {theme === "dark" ? "☾ nox" : "☼ lux"}
+    </button>
+  );
+}
+
+function Section({ id, num, title, meta, children }) {
+  const [ref, seen] = useInView();
+  return (
+    <section id={id} ref={ref} className={`sec reveal${seen ? " in" : ""}`}>
+      <header className="sec-head">
+        <span className="sec-num">§ {num}</span>
+        <h2 className="sec-title">
+          <Scramble text={title} play={seen} duration={700} />
+        </h2>
+        <span className="sec-rule" />
+        {meta && <span className="sec-meta">{meta}</span>}
+      </header>
+      {children}
+    </section>
+  );
+}
+
+const Authors = ({ list }) =>
+  list.split(", ").map((a, i, all) => (
+    <span key={a}>
+      {a === PROFILE.name ? <span className="me">{a}</span> : a}
+      {i < all.length - 1 && ", "}
+    </span>
+  ));
+
+function Paper({ paper, index }) {
+  const [bib, setBib] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const text = toBibtex(paper);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    } catch {
+      setCopied(false);
+    }
+  };
+  return (
+    <li className="pub">
+      <span className="pub-idx">[{String(index + 1).padStart(2, "0")}]</span>
+      <div>
+        <div className="pub-tags">
+          <span className="tag">
+            {paper.short} {paper.year}
+          </span>
+          {paper.award && <span className="tag award">★ {paper.award}</span>}
+        </div>
+        <h3 className="pub-title">
+          <a href={paper.link} target="_blank" rel="noopener noreferrer">
+            {paper.title}
+          </a>
+        </h3>
+        <p className="pub-authors">
+          <Authors list={paper.authors} />
+        </p>
+        <p className="pub-venue">
+          {paper.venue}, {paper.year}
+        </p>
+        <div className="pub-actions">
+          <a className="bracket" href={paper.link} target="_blank" rel="noopener noreferrer">
+            {paper.linkLabel} ↗
+          </a>
+          <button type="button" className="bracket" aria-expanded={bib} onClick={() => setBib((b) => !b)}>
+            {bib ? "− bibtex" : "+ bibtex"}
+          </button>
+          {bib && (
+            <button type="button" className="bracket" onClick={copy}>
+              {copied ? "copied ✓" : "copy"}
+            </button>
+          )}
+        </div>
+        {bib && <pre className="bib">{text}</pre>}
+      </div>
+    </li>
+  );
+}
+
+const SECTION_IDS = SECTIONS.map((s) => s.id);
 
 export default function AcademicSite() {
+  const active = useActiveSection(SECTION_IDS);
+  const [emailCopied, setEmailCopied] = useState(false);
+  const year = new Date().getFullYear();
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(PROFILE.email.join("@"));
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 1400);
+    } catch {
+      setEmailCopied(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#f8f8f5] text-gray-800 font-serif">
-      {/* Import Google Font */}
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap"
-        rel="stylesheet"
-      />
+    <>
+      <FlowField />
+      <div className="shell">
+        <header className="topbar">
+          <span className="tb-left">N·B·K</span>
+          <span className="tb-mid">52.2070° N &nbsp;0.1166° E</span>
+          <span className="tb-right">
+            <span className="tb-clock">
+              Cambridge <Clock />
+            </span>
+            <ThemeToggle />
+          </span>
+        </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-24 text-center">
-        {/* === Portrait === */}
-        <div className="flex justify-center mb-6">
-          <img
-            src={PROFILE.photo}
-            alt={PROFILE.name}
-            className="w-36 h-36 rounded-full object-cover border-2 border-[#b38b1d]/60 shadow-md"
-          />
+        <div className="layout">
+          <aside className="aside">
+            <AsciiPortrait src={PROFILE.photo} alt={`Portrait of ${PROFILE.name} rendered in ASCII characters`} />
+
+            <p className="kicker">PhD Student · Cambridge</p>
+            <h1 className="name">
+              <Scramble text={PROFILE.name} duration={1400} delay={250} />
+            </h1>
+            <p className="tagline">{PROFILE.tagline}</p>
+
+            <nav className="index" aria-label="Sections">
+              <ol>
+                {SECTIONS.map((s) => (
+                  <li key={s.id}>
+                    <a href={`#${s.id}`} className={active === s.id ? "on" : undefined} aria-current={active === s.id ? "location" : undefined}>
+                      <span className="ix-num">§ {s.num}</span>
+                      <span className="ix-title">{s.title}</span>
+                      <span className="ix-mark">←</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+
+            <div className="links">
+              <a className="bracket" href={PROFILE.cv} target="_blank" rel="noopener noreferrer">CV</a>
+              <a className="bracket" href={PROFILE.scholar} target="_blank" rel="noopener noreferrer">Scholar</a>
+              <a className="bracket" href={PROFILE.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a className="bracket" href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+          </aside>
+
+          <main className="main">
+            <Section id="preamble" num="I" title="Preamble">
+              <div className="prose">
+                <p className="dropcap">
+                  Hi, I’m Naïl — a first-year PhD student at the <strong>Department of Engineering, University of Cambridge</strong>,
+                  supervised by <A href="https://rv285.github.io">Prof. Ramji Venkataramanan</A> (Probabilistic Systems, Information and
+                  Inference Group) and <A href="https://rich-turner-group.github.io">Prof. Rich Turner</A> (Machine Learning Group).
+                </p>
+                <p>
+                  I am grateful to be the recipient of the <strong>G-Research Trinity College PhD Scholarship</strong>.
+                </p>
+              </div>
+            </Section>
+
+            <Section id="research" num="II" title="Research">
+              <div className="prose">
+                <p>
+                  My research focuses on the theoretical foundations (geometry, structure of errors, sampling) of{" "}
+                  <em>flow/diffusion-based models</em>. I am also interested in understanding how to train generative models on
+                  synthetic data.
+                </p>
+              </div>
+              <ul className="keywords" aria-label="Keywords">
+                <li>geometry of score matching</li>
+                <li>error propagation</li>
+                <li>sampling</li>
+                <li>synthetic data &amp; model collapse</li>
+              </ul>
+            </Section>
+
+            <Section id="publications" num="III" title="Publications" meta={`${String(PAPERS.length).padStart(2, "0")} entries`}>
+              <ol className="pubs">
+                {PAPERS.map((p, i) => (
+                  <Paper key={p.id} paper={p} index={i} />
+                ))}
+              </ol>
+            </Section>
+
+            <Section id="teaching" num="IV" title="Teaching">
+              <ul className="chev">
+                <li>
+                  <span className="chev-head">Supervisor, Trinity College</span>
+                  <span className="chev-body">
+                    Third-year engineers (Part IIA) — <em>Information Theory and Coding</em> (3F7) and <em>Inference</em> (3F8).
+                  </span>
+                </li>
+                <li>
+                  <span className="chev-head">Thesis co-supervisor, MPhil MLMI</span>
+                  <span className="chev-body">
+                    MPhil in Machine Learning and Machine Intelligence, Cambridge — “Learning Heavy-Tailed Distributions with
+                    Diffusion Models”.
+                  </span>
+                </li>
+              </ul>
+            </Section>
+
+            <Section id="trajectory" num="V" title="Trajectory">
+              <div className="prose">
+                <p>
+                  Before coming to Cambridge, I studied applied mathematics, literature, and geopolitics in the French preparatory
+                  class system at Lycée Henri IV, before entering a dual degree program between HEC Paris and ENSAE Paris. I also
+                  pursued a Master’s degree in Mathematics at Sorbonne Université, followed by a dual degree between École Normale
+                  Supérieure Paris-Saclay (MSc Mathématiques, Vision, Apprentissage) and ENSAE’s specialization in Data Science,
+                  Statistics, and Learning.
+                </p>
+                <p>
+                  Throughout these formative years, I had the privilege of being guided by remarkable mentors — including{" "}
+                  <A href="https://www.math.ucla.edu/~mihai/">Prof. Mihai Cucuringu</A> (Department of Mathematics, UCLA and
+                  Department of Statistics, Oxford), <A href="https://ferdiasherry.com">Dr. Ferdia Sherry</A> (Department of Applied
+                  Maths and Theoretical Physics, Cambridge),{" "}
+                  <A href="https://perso.telecom-paristech.fr/fdalche/">Prof. Florence d'Alché-Buc</A> (LTCI, Télécom Paris) and{" "}
+                  <A href="https://remi.flamary.com">Prof. Rémi Flamary</A> (CMAP, École Polytechnique) — whose influence
+                  strengthened my resolve to dedicate myself fully to research.
+                </p>
+              </div>
+              <ol className="traj">
+                {TRAJECTORY.map((t) => (
+                  <li key={t.what}>
+                    <span className="yrs">
+                      {t.from} — {t.to ?? <span className="cursor" aria-label="present" />}
+                    </span>
+                    <span>
+                      <span className="what">{t.what}</span>
+                      <span className="where">{t.where}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <p className="traj-cv">
+                Full record in the <A href={PROFILE.cv}>curriculum vitæ</A>.
+              </p>
+            </Section>
+
+            <Section id="correspondence" num="VI" title="Correspondence">
+              <div className="contact">
+                <span className="contact-addr">
+                  {PROFILE.email[0]} <span className="at">(at)</span> {PROFILE.email[1]}
+                </span>
+                <button type="button" className="bracket" onClick={copyEmail}>
+                  {emailCopied ? "copied ✓" : "copy address"}
+                </button>
+              </div>
+              <p className="contact-note">Department of Engineering · Trinity College · University of Cambridge</p>
+            </Section>
+          </main>
         </div>
 
-        {/* === Name === */}
-        <h1
-          className="text-6xl md:text-7xl font-semibold tracking-wide"
-          style={{ color: "#b38b1d", fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          {PROFILE.name}
-        </h1>
-
-        {/* === Tagline === */}
-        <p
-          className="mt-4 text-[15px] md:text-base text-gray-700 italic"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          {PROFILE.tagline}
-        </p>
-
-       
-        {/* === Introduction (justified, multi-paragraph + bullets) === */}
-        <div
-          className="mt-8 text-[15px] md:text-base text-gray-700 leading-relaxed text-justify max-w-2xl mx-auto"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          {INTRO_PARAS.map((para, i) => (
-            <p key={i} className="mb-4">{para}</p>
-          ))}
-
-          <ul className="list-disc ml-6 space-y-1 text-left">
-            {INTRO_BULLETS.map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-          
-
-          <p className="text-left text-gray-700 mt-4" style={{ textAlign: "justify" }}>
-            <span className="italic text-[#b38b1d]">Contact:</span> nbk24(at)cam.ac.uk
+        <footer className="colophon">
+          <p>
+            The ink in the margins is advected by a divergence-free field, ∇·v = 0; your cursor is a point vortex.
           </p>
-
-        </div>
-
-
-
-
-        {/* === Links === */}
-        <div className="mt-8 flex justify-center gap-4">
-          <LinkButton href={PROFILE.cv}>CV</LinkButton>
-          <LinkButton href={PROFILE.scholar}>Google Scholar</LinkButton>
-          <LinkButton href={PROFILE.linkedin}>LinkedIn</LinkButton>
-          <LinkButton href={PROFILE.github}>GitHub</LinkButton>
-        </div>
-
-        {/* === Divider === */}
-        <div className="w-16 h-px bg-gray-400/50 mx-auto my-16"></div>
-
-        {/* === Papers === */}
-        <section className="text-left">
-          <h2
-            className="text-2xl font-medium text-gray-800 mb-6 tracking-wide"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-          >
-            Selected Papers
-          </h2>
-          <div className="flex flex-col gap-5">
-            {PAPERS.map((p) => (
-              <PaperCard key={p.id} paper={p} />
-            ))}
-          </div>
-        </section>
-
-        {/* === Footer === */}
-        <footer className="mt-20 text-xs text-gray-500 italic">
-          © {new Date().getFullYear()} {PROFILE.name}
+          <p className="col-sign">
+            © {toRoman(year)} · {PROFILE.name}
+          </p>
         </footer>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
