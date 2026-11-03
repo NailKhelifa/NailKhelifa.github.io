@@ -161,7 +161,7 @@ const Authors = ({ list }) =>
     </span>
   ));
 
-function Paper({ paper, index }) {
+function Paper({ paper }) {
   const [bib, setBib] = useState(false);
   const [copied, setCopied] = useState(false);
   const text = toBibtex(paper);
@@ -176,7 +176,9 @@ function Paper({ paper, index }) {
   };
   return (
     <li className="pub">
-      <span className="pub-idx">[{String(index + 1).padStart(2, "0")}]</span>
+      <span className="pub-idx" aria-hidden="true">
+        &gt;&gt;
+      </span>
       <div>
         <div className="pub-tags">
           <span className="tag">
@@ -266,8 +268,8 @@ export default function AcademicSite() {
 
             <Section id="publications" title="Publications">
               <ol className="pubs">
-                {PAPERS.map((p, i) => (
-                  <Paper key={p.id} paper={p} index={i} />
+                {PAPERS.map((p) => (
+                  <Paper key={p.id} paper={p} />
                 ))}
               </ol>
             </Section>

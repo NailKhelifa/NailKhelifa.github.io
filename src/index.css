@@ -291,8 +291,7 @@ a.ink:hover {
 .pub {
   position: relative;
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 0 14px;
+  grid-template-columns: 2.6em minmax(0, 1fr);
   padding: 22px 0;
   border-top: 1px solid var(--rule);
 }
@@ -318,10 +317,6 @@ a.ink:hover {
   padding-top: 3px;
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--ink-3);
-  transition: color 0.2s ease;
-}
-.pub:hover .pub-idx {
   color: var(--accent);
 }
 .pub-tags {
@@ -562,12 +557,6 @@ a.ink:hover {
   }
   .prose p {
     text-align: left;
-  }
-  .pub {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .pub-idx {
-    padding: 0 0 6px;
   }
   .pub-title {
     font-size: 19.5px;
