@@ -227,7 +227,6 @@ export default function AcademicSite() {
           <aside className="aside">
             <AsciiPortrait src={PROFILE.photo} alt={`Portrait of ${PROFILE.name} drawn as a vector field`} />
 
-            <p className="kicker">PhD Student · Cambridge</p>
             <h1 className="name">
               <Scramble text={PROFILE.name} duration={1400} delay={250} />
             </h1>
@@ -263,12 +262,6 @@ export default function AcademicSite() {
                   synthetic data.
                 </p>
               </div>
-              <ul className="keywords" aria-label="Keywords">
-                <li>geometry of score matching</li>
-                <li>error propagation</li>
-                <li>sampling</li>
-                <li>synthetic data &amp; model collapse</li>
-              </ul>
             </Section>
 
             <Section id="publications" title="Publications">

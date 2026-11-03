@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { cssVar, getTheme, hexToRgb, mixRgb, onThemeChange, prefersReducedMotion } from "../theme.js";
+import { cssVar, getTheme, onThemeChange, prefersReducedMotion } from "../theme.js";
 
 // The portrait is drawn as a vector field and "sampled" by a reverse diffusion
 // on the 2-D vectors:
@@ -175,7 +175,7 @@ export default function AsciiPortrait({ src, alt }) {
       ex: null,
       ey: null,
       local: null,
-      palette: [],
+      color: "",
       sampling: false,
       start: 0,
       raf: 0,
@@ -192,9 +192,7 @@ export default function AsciiPortrait({ src, alt }) {
         st.x0[i] = m * dirX[i];
         st.y0[i] = m * dirY[i];
       }
-      const ink = hexToRgb(cssVar("--ink"));
-      const accent = hexToRgb(cssVar("--accent"));
-      st.palette = [0, 0.45, 0.8, 1].map((k) => mixRgb(ink, accent, k));
+      st.color = cssVar("--accent");
     }
 
     function size() {
@@ -233,8 +231,8 @@ export default function AsciiPortrait({ src, alt }) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.lineCap = "round";
       const L = st.cell * 1.3; // a full-ink arrow slightly overlaps its neighbours
-      // one path per (colour, stroke width) bucket
-      const paths = Array.from({ length: 12 }, () => new Path2D());
+      // one path per stroke-width bucket
+      const paths = [new Path2D(), new Path2D(), new Path2D()];
       for (let i = 0; i < n; i++) {
         const ti = local[i] > gt ? local[i] : gt;
         let vx = x0[i];
@@ -256,9 +254,7 @@ export default function AsciiPortrait({ src, alt }) {
         const cy = (((i / COLS) | 0) + 0.5) * st.cell;
         const hx = (vx * L) / 2;
         const hy = (vy * L) / 2;
-        const b = ti < 0.06 ? 0 : ti < 0.3 ? 1 : ti < 0.6 ? 2 : 3;
-        const wb = m < 0.35 ? 0 : m < 0.7 ? 1 : 2;
-        const p = paths[b * 3 + wb];
+        const p = paths[m < 0.35 ? 0 : m < 0.7 ? 1 : 2];
         p.moveTo(cx - hx, cy - hy);
         p.lineTo(cx + hx, cy + hy);
         if (m > 0.3) {
@@ -273,12 +269,10 @@ export default function AsciiPortrait({ src, alt }) {
           p.lineTo(tx - k * (ca * 2 * hx + sa * 2 * hy), ty - k * (-sa * 2 * hx + ca * 2 * hy));
         }
       }
-      for (let b = 0; b < 4; b++) {
-        ctx.strokeStyle = st.palette[b];
-        for (let wb = 0; wb < 3; wb++) {
-          ctx.lineWidth = [0.55, 0.9, 1.3][wb] * Math.max(1, st.cell / 7);
-          ctx.stroke(paths[b * 3 + wb]);
-        }
+      ctx.strokeStyle = st.color;
+      for (let wb = 0; wb < 3; wb++) {
+        ctx.lineWidth = [0.55, 0.9, 1.3][wb] * Math.max(1, st.cell / 7);
+        ctx.stroke(paths[wb]);
       }
 
       const ab = Math.cos((Math.PI / 2) * gt) ** 2;

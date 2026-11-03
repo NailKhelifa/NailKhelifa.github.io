@@ -23,17 +23,5 @@ export function onThemeChange(cb) {
 export const cssVar = (name) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-export function hexToRgb(hex) {
-  let h = hex.replace("#", "");
-  if (h.length === 3) h = h.replace(/./g, "$&$&");
-  const n = parseInt(h, 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-
-export function mixRgb(a, b, k) {
-  const c = a.map((v, i) => Math.round(v + (b[i] - v) * k));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
-}
-
 export const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;

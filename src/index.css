@@ -188,17 +188,8 @@ a.ink:hover {
   font-variant-numeric: tabular-nums;
 }
 
-.kicker {
-  margin-top: 34px;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
 .name {
-  margin: 8px 0 12px;
+  margin: 34px 0 12px;
   font-weight: 500;
   font-size: clamp(40px, 4.2vw, 54px);
   line-height: 1;
@@ -284,32 +275,10 @@ a.ink:hover {
 
 .dropcap::first-letter {
   float: left;
-  font-size: 4.3em;
+  font-size: 3.3em;
   line-height: 0.82;
-  padding: 7px 10px 0 0;
+  padding: 6px 8px 0 0;
   font-weight: 500;
-  color: var(--accent);
-}
-
-.keywords {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 24px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.keywords li {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  padding: 3px 9px;
-  border: 1px solid var(--rule);
-  color: var(--ink-2);
-  background: color-mix(in srgb, var(--bg) 70%, transparent);
-}
-.keywords li::before {
-  content: "# ";
   color: var(--accent);
 }
 
